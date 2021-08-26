@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="be90b103-8d21-4adb-93a7-5683b7152a96" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="bk-munit-demo-01Flow" doc:id="26531a12-28b9-4930-a67c-4b56e285af46" >
+		<http:listener doc:name="Listener" doc:id="7ac227aa-e1c2-4cc4-b5d6-1deaf0b360b6" config-ref="HTTP_Listener_config" path="/munit"/>
+		<logger level="INFO" doc:name="Start Log" doc:id="0c661b42-704b-40c0-848b-cf642e43e553" message="start munit demo log"/>
+		<ee:transform doc:name="Transform Message" doc:id="47565bc1-e0a8-4cba-986d-dcb9c9429a0e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"Welcome to mule" ++ (attributes.queryParams.firstname as String default "" ++" " ++ attributes.queryParams.lastname as String default "")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Log" doc:id="f036a2e7-8ede-42ed-b7cf-a8501f9352bd" message="completed munit demo log"/>
+	</flow>
+</mule>
